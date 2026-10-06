@@ -97,6 +97,9 @@ public class ApplicationService {
     public ApplicationResponse changeStatus(Long id, StatusUpdateRequest request) {
         JobApplication application = findOwned(id);
         ApplicationStatus oldStatus = application.getStatus();
+        if (oldStatus == request.status()) {
+            return mapper.toResponse(application);
+        }
         application.setStatus(request.status());
         JobApplication saved = applicationRepository.save(application);
         saveHistory(saved, oldStatus, request.status(), request.comment());
