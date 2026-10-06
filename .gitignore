@@ -1,0 +1,10 @@
+target/
+.idea/
+.vscode/
+*.iml
+.env
+*.env
+application-local.yml
+application-prod.yml
+endpoint-notes.txt
+*.log
