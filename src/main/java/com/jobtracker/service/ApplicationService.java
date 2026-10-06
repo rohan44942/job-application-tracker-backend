@@ -16,6 +16,7 @@ import com.jobtracker.exception.ResourceNotFoundException;
 import com.jobtracker.repository.JobApplicationRepository;
 import com.jobtracker.repository.StatusHistoryRepository;
 import java.time.LocalDate;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ApplicationService {
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("appliedDate", "createdAt", "companyName", "status");
 
     private final JobApplicationRepository applicationRepository;
     private final StatusHistoryRepository statusHistoryRepository;
@@ -134,8 +137,11 @@ public class ApplicationService {
         Sort springSort = Sort.by(Sort.Direction.DESC, "createdAt");
         if (sort != null && !sort.isBlank()) {
             String[] parts = sort.split(",");
-            String property = parts[0];
-            Sort.Direction direction = parts.length > 1 && parts[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            String property = parts[0].trim();
+            if (!ALLOWED_SORT_FIELDS.contains(property)) {
+                throw new BadRequestException("Sort field must be appliedDate, createdAt, companyName or status");
+            }
+            Sort.Direction direction = parts.length > 1 && parts[1].trim().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             springSort = Sort.by(direction, property);
         }
         return PageRequest.of(Math.max(page, 0), safeSize, springSort);
