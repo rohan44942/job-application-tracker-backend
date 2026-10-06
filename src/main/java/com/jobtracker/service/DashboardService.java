@@ -1,10 +1,12 @@
 package com.jobtracker.service;
 
 import com.jobtracker.dto.dashboard.DashboardStatsResponse;
+import com.jobtracker.dto.dashboard.MonthlyApplicationsResponse;
 import com.jobtracker.dto.dashboard.SuccessRateResponse;
 import com.jobtracker.entity.ApplicationStatus;
 import com.jobtracker.entity.User;
 import com.jobtracker.repository.JobApplicationRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,6 +43,13 @@ public class DashboardService {
         double rejectionRate = rate(stats.rejected(), total);
         double interviewToOfferRate = rate(stats.offers(), stats.interviews());
         return new SuccessRateResponse(interviewRate, offerRate, rejectionRate, interviewToOfferRate);
+    }
+
+    public List<MonthlyApplicationsResponse> monthly() {
+        User user = currentUserService.getCurrentUser();
+        return applicationRepository.countMonthlyApplications(user).stream()
+                .map(item -> new MonthlyApplicationsResponse(item.getMonth(), item.getApplications()))
+                .toList();
     }
 
     private double rate(double count, double total) {

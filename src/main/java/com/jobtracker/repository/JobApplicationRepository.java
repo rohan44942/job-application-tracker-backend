@@ -6,6 +6,7 @@ import com.jobtracker.entity.JobType;
 import com.jobtracker.entity.User;
 import com.jobtracker.entity.WorkMode;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,15 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     long countByUserAndStatus(User user, ApplicationStatus status);
     long countByStatus(ApplicationStatus status);
     long countByAppliedDate(LocalDate appliedDate);
+
+    @Query("""
+            select function('to_char', a.appliedDate, 'YYYY-MM') as month, count(a) as applications
+            from JobApplication a
+            where a.user = :user and a.appliedDate is not null
+            group by function('to_char', a.appliedDate, 'YYYY-MM')
+            order by function('to_char', a.appliedDate, 'YYYY-MM')
+            """)
+    List<MonthlyApplicationCount> countMonthlyApplications(User user);
 
     @Query("""
             select a from JobApplication a

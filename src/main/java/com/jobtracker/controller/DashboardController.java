@@ -1,10 +1,10 @@
 package com.jobtracker.controller;
 
 import com.jobtracker.dto.dashboard.DashboardStatsResponse;
+import com.jobtracker.dto.dashboard.MonthlyApplicationsResponse;
 import com.jobtracker.dto.dashboard.SuccessRateResponse;
 import com.jobtracker.service.DashboardService;
 import java.util.List;
-import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class DashboardController {
     }
 
     @GetMapping("/monthly")
-    public List<Map<String, Object>> monthly() {
-        return List.of();
+    public List<MonthlyApplicationsResponse> monthly() {
+        return dashboardService.monthly();
     }
 }
