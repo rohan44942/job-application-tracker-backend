@@ -61,6 +61,12 @@ http://localhost:8080/swagger-ui.html
 /api/v1
 ```
 
+## Health Check
+
+```text
+GET /api/v1/health
+```
+
 ## Main Flow
 
 Register a user, log in, copy the JWT token, then send protected requests with:
